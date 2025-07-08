@@ -6,6 +6,7 @@ import {getTodoListsByUserId} from "@/lib/firebase/firestore/getTodoListsByUserI
 import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components/ui/resizable";
 import TodoLists from "@/components/features/TodoLists";
 import TaskList from "@/components/features/TaskList";
+import {getTasksByTodoId} from "@/lib/firebase/firestore/getTasksByTodoId";
 
 const ResizableLayout = () => {
 
@@ -16,12 +17,14 @@ const ResizableLayout = () => {
   const selectedTodoList = useStore(state => state.selectedTodoList);
   const tasks = useStore(state => state.tasks);
   const resetTasks = useStore(state => state.resetTasks);
+  const setTasks = useStore(state => state.setTasks);
 
+  // Для todoList
   useEffect(() => {
     const fetchTodoLists = async () => {
       if (user) {
-        const lists = await getTodoListsByUserId(user.uid);
-        setTodoLists(lists);
+        const fetchedLists = await getTodoListsByUserId(user.uid);
+        if (fetchedLists) setTodoLists(fetchedLists);
       } else {
         setTodoLists([]);
         setSelectedTodoList(null);
@@ -32,6 +35,26 @@ const ResizableLayout = () => {
     fetchTodoLists();
   }, [user, setTodoLists, setSelectedTodoList, resetTasks]);
 
+
+  // Для tasks
+  useEffect(() => {
+    const fetchTasksForSelectedList = async () => {
+      if (selectedTodoList) {
+        try {
+          const fetchedTasks = await getTasksByTodoId(selectedTodoList.id);
+          if (fetchedTasks) setTasks(fetchedTasks);
+        } catch (error) {
+          console.error("Помилка завантаження завдань:", error);
+          setTasks([]);
+        }
+      } else {
+        setTasks([]);
+      }
+    };
+
+    fetchTasksForSelectedList();
+  }, [selectedTodoList, setTasks]);
+
   return (
     <div className='h-full'>
       <ResizablePanelGroup
@@ -39,13 +62,15 @@ const ResizableLayout = () => {
         className=" rounded-lg border md:min-w-[450px]"
       >
         <ResizablePanel defaultSize={50}>
+          <h3 className='p-2 font-bold'>Списки</h3>
           {todoLists && <TodoLists list={todoLists} setSelectedTodoList={setSelectedTodoList} selectedTodoList={selectedTodoList}/>}
         </ResizablePanel>
         <ResizableHandle
           className='border-2'
         />
         <ResizablePanel defaultSize={50}>
-          {tasks && <TaskList tasks={tasks}/>}
+          <h3 className='p-2 font-bold'>Завдання</h3>
+          {tasks && <TaskList tasks={tasks} selectedTodoList={selectedTodoList}/>}
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

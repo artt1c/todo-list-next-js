@@ -4,13 +4,14 @@ import React, {useState} from 'react';
 import {Button} from "@/components/ui/button";
 import {createTodoList} from "@/lib/firebase/firestore/createTodoList";
 import {useStore} from "@/store";
-import {createTasks} from "@/lib/firebase/firestore/createTasks";
+import {createTask} from "@/lib/firebase/firestore/createTask";
 import {ITodo} from "@/models/ITodo";
 
 const TodoList = () => {
 
   const user = useStore(state => state.user);
   const addTodoList = useStore(state => state.addTodoList);
+  const addTask = useStore(state => state.addTask);
   const [todo, setTodo] = useState<ITodo| null>(null)
 
 
@@ -30,7 +31,7 @@ const TodoList = () => {
   const addTaskOnList = async () => {
     if (!user || !todo) return;
     try {
-      await createTasks(todo.id, 'testTask', 'lorem ipsum');
+      await createTask(todo.id, 'testTask', 'lorem ipsum').then(addTask);
     } catch (e) {
       console.error(e);
     }

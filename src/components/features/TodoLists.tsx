@@ -16,7 +16,7 @@ type Props = {
 }
 
 const TodoLists:FC<Props> = ({list, setSelectedTodoList, selectedTodoList}) => {
-  const { deleteTodoList: deleteTodoListZustand } = useStore();
+  const deleteTodoListZustand = useStore(state => state.deleteTodoList);
 
   const handleDelete = async (todoId: string) => {
     try {
