@@ -9,6 +9,7 @@ import {useStore} from "@/store";
 import {ITodo} from "@/models/ITodo";
 import {deleteTask} from "@/lib/firebase/firestore/deleteTask";
 import {updateTask} from "@/lib/firebase/firestore/updateTaks";
+import AddTask from "@/components/features/AddTask";
 
 type Props = {
   tasks: ITask[];
@@ -44,10 +45,8 @@ const TaskList:FC<Props> = ({tasks, selectedTodoList}) => {
     const newCompletedStatus = !task.completed;
 
     try {
-      // 1. Оновлюємо завдання у Firestore, використовуючи вже існуючу updateTask
       await updateTask(selectedTodoList.id, task.id, { completed: newCompletedStatus });
 
-      // 2. Оновлюємо стан Zustand
       updateTaskZustand(task.id, { completed: newCompletedStatus });
 
       console.log(`Статус завдання '${task.title}' змінено на: ${newCompletedStatus ? 'Виконано' : 'Не виконано'}`);
@@ -74,7 +73,7 @@ const TaskList:FC<Props> = ({tasks, selectedTodoList}) => {
               Стан
             </TableHead>
             <TableHead className='flex justify-center items-center'>
-              {/*<AddTodo />*/}
+              <AddTask/>
             </TableHead>
           </TableRow>
         </TableHeader>

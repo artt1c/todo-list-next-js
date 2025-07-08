@@ -6,10 +6,10 @@ const Nav = () => {
     <nav>
       <ul className='flex gap-4 underline'>
         <li>
-          <Link href='/'>Home</Link>
+          <Link href='/'>Головна</Link>
         </li>
         <li>
-          <Link href='todo-list'>Tasks</Link>
+          <Link href='todo-list'>Список завдань</Link>
         </li>
       </ul>
     </nav>
