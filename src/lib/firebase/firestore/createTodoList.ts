@@ -1,5 +1,6 @@
-import {addDoc, collection, doc, serverTimestamp, updateDoc} from "@firebase/firestore";
+import {addDoc, collection, doc, getDoc, serverTimestamp, updateDoc} from "@firebase/firestore";
 import {db} from "@/lib/firebase/clientApp";
+import {ITodo} from "@/models/ITodo";
 
 const role: 'admin' | 'viewer' = 'admin';
 
@@ -16,10 +17,18 @@ export const createTodoList = async (title: string, uid:string) => {
     updatedAt: serverTimestamp(),
   })
 
-  // Додавання в середину ID
   await updateDoc(doc(db, 'todoLists', docRef.id), {
     id: docRef.id,
   })
 
-  return docRef.id;
+  const createdDoc = await getDoc(docRef);
+
+  if (!createdDoc.exists()) {
+    throw new Error(`Failed to retrieve newly created todoList with ID: ${docRef.id}`);
+  }
+
+  return {
+    id: createdDoc.id,
+    ...createdDoc.data() as Omit<ITodo, 'id'>
+  };
 }

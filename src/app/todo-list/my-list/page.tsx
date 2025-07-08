@@ -1,9 +1,10 @@
 import React from 'react';
+import ResizableLayout from "@/components/layout/ResizableLayout";
 
 const MyLists = () => {
   return (
-    <div>
-      MyLists
+    <div className='h-full'>
+      <ResizableLayout/>
     </div>
   );
 };

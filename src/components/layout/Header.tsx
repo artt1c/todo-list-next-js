@@ -16,6 +16,8 @@ const Header = () => {
         <h2>Task Manager</h2>
         <Nav/>
       </div>
+
+      {/*В ідеалі винести в окремий компонент*/}
       {user ? (<User user={user}/>) : (<Auth/>)}
 
     </header>
