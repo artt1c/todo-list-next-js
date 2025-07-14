@@ -27,8 +27,9 @@
     "react-resizable-panels": "^3.0.3",
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
+    "zustand": "^5.0.6",
     "zod": "^3.25.75",
-    "zustand": "^5.0.6"
+    "joi": "^17.13.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

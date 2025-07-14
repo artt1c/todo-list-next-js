@@ -2,7 +2,7 @@ import {ITask} from "@/models/ITask";
 import {doc, serverTimestamp, updateDoc} from "@firebase/firestore";
 import {db} from "@/lib/firebase/clientApp";
 
-export const updateTask = async (
+export const updateTaskFire = async (
   todoListId: string,
   taskId: string,
   updatedFields: Partial<Omit<ITask, 'id' | 'createdAt'>>

@@ -69,7 +69,10 @@ const ResizableLayout = () => {
           className='border-2'
         />
         <ResizablePanel defaultSize={50}>
-          <h3 className='p-2 font-bold'>Завдання</h3>
+          <div className='flex gap-2 items-center'>
+            <h3 className='p-2 font-bold'>Завдання</h3>
+            {selectedTodoList && <p>{selectedTodoList.title}</p>}
+          </div>
           {tasks && <TaskList tasks={tasks} selectedTodoList={selectedTodoList}/>}
         </ResizablePanel>
       </ResizablePanelGroup>

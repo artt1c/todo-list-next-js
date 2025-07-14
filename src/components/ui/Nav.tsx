@@ -9,7 +9,7 @@ const Nav = () => {
           <Link href='/'>Головна</Link>
         </li>
         <li>
-          <Link href='todo-list'>Список завдань</Link>
+          <Link href='/todo-list'>Список завдань</Link>
         </li>
       </ul>
     </nav>

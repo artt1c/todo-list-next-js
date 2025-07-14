@@ -1,25 +1,27 @@
-'use client'
-
 import React, {FC} from 'react';
 import GenericFormDialog from "@/components/features/GenericFormDialog";
 import {useStore} from "@/store";
-import {createTodoList} from "@/lib/firebase/firestore/createTodoList";
 import {IFormData} from "@/models/IFormData";
+import {updateTodo} from "@/lib/firebase/firestore/updateTodo";
+import {RefreshCcw} from "lucide-react";
+import {ITodo} from "@/models/ITodo";
 
 type Props = {
-  children: React.ReactNode;
+  todo: ITodo
 }
 
-const AddTodo:FC<Props> = ({children}) => {
+const UpdateTodo:FC<Props> = ({todo}) => {
 
   // Store
-  const {user, addTodoList} = useStore();
+  const {user, updateTodoList} = useStore();
 
   const handlerSubmit = async (data:IFormData) => {
     if (!user) return;
 
-    await createTodoList(data.title, user.uid)
-      .then(addTodoList);
+    todo.title = data.title;
+    await updateTodo(todo.id, todo)
+
+    updateTodoList(todo.id, todo)
   }
 
   return (
@@ -28,10 +30,11 @@ const AddTodo:FC<Props> = ({children}) => {
       description='Заповніть форму, щоб створити нове завдання.'
       hasDescription={false}
       handlerSubmit={handlerSubmit}
+      initialValues={{title: todo.title}}
     >
-      {children}
+      <RefreshCcw className='size-6 p-1'/>
     </GenericFormDialog>
   );
 };
 
-export default AddTodo;
+export default UpdateTodo;

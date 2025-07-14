@@ -3,11 +3,11 @@ import {ITodo} from "@/models/ITodo";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {formattedTimeInMs} from "@/lib/formattedTimeInMs";
 import {Button} from "@/components/ui/button";
-import {Trash} from "lucide-react";
-import AddTodo from "@/components/features/AddTodo";
+import {CirclePlus, Trash} from "lucide-react";
 import {deleteTodoList} from "@/lib/firebase/firestore/deletTodoList";
 import {useStore} from "@/store";
-import ContextMenuWrapper from "@/components/layout/ContextMenuWrapper";
+import AddTodo from "@/components/features/AddTodo";
+import UpdateTodo from "@/components/features/UpdateTodo";
 
 type Props = {
   list:ITodo[];
@@ -42,7 +42,12 @@ const TodoLists:FC<Props> = ({list, setSelectedTodoList, selectedTodoList}) => {
               Створено
             </TableHead>
             <TableHead className='flex justify-center items-center'>
-              <AddTodo />
+              <AddTodo>
+                <span className='flex gap-2 items-center px-2 py-1'>
+                  Створити
+                  <CirclePlus/>
+                </span>
+              </AddTodo>
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -52,12 +57,10 @@ const TodoLists:FC<Props> = ({list, setSelectedTodoList, selectedTodoList}) => {
               onClick={() => {setSelectedTodoList(todo)}}
             >
                 <TableCell>
-                  <ContextMenuWrapper>
-                    {todo.title}
-                  </ContextMenuWrapper>
+                  {todo.title}
                 </TableCell>
                 <TableCell>{formattedTimeInMs(todo.createdAt.seconds * 1000)}</TableCell>
-                <TableCell className='flex justify-center'>
+                <TableCell className='flex justify-center gap-2'>
                   <Button
                     variant='destructive'
                     className='size-6'
@@ -67,6 +70,7 @@ const TodoLists:FC<Props> = ({list, setSelectedTodoList, selectedTodoList}) => {
                   >
                     <Trash/>
                   </Button>
+                  <UpdateTodo todo={todo}/>
                 </TableCell>
             </TableRow>
           ))}

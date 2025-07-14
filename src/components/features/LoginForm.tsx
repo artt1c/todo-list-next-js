@@ -31,8 +31,8 @@ export function LoginForm({className, ...props}: React.ComponentProps<"div">) {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    loginUser(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await loginUser(values)
     router.push("/")
   }
 
