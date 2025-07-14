@@ -8,7 +8,7 @@ type AppState = AuthUserSlice & TodoListSlice;
 export const useStore = create<AppState>()(
   persist(
     (set, get, store) => ({
-      ...createUserSlice(set, get),
+      ...createUserSlice(set, get, store),
       ...createTodoListSlice(set, get, store)
     }),
     {

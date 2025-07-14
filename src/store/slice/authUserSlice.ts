@@ -1,4 +1,5 @@
 import {IUser} from "@/models/IUser";
+import {StateCreator} from "zustand/vanilla";
 
 export interface AuthUserSlice {
   user: IUser | null;
@@ -7,7 +8,7 @@ export interface AuthUserSlice {
   isAuth: () => boolean;
 }
 
-export const createUserSlice = (set: any, get:any):AuthUserSlice => ({
+export const createUserSlice:StateCreator<AuthUserSlice> = (set, get):AuthUserSlice => ({
   user: null,
   setUser: (user:IUser | null) => set({user}),
   logout: () => set({user: null}),  

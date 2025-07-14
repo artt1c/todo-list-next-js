@@ -22,7 +22,7 @@ export interface TodoListSlice {
 
 
 // В ідеалі потрібно рознести по різним слайсам todoLsit і task
-export const createTodoListSlice: StateCreator<TodoListSlice> = (set,get) => ({
+export const createTodoListSlice: StateCreator<TodoListSlice> = (set) => ({
   todoLists: [],
   selectedTodoList: null,
   tasks: [],

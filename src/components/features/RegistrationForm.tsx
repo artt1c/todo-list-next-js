@@ -33,8 +33,8 @@ export function RegistrationForm({className, ...props}: React.ComponentProps<"di
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    registrationUser(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await registrationUser(values)
     router.push("/")
   }
 

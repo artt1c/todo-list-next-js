@@ -15,7 +15,7 @@ const CheckAuth:FC<Props> = ({children}) => {
   const pathname = usePathname();
 
   useEffect(()=> {
-    if (!isAuth && !(pathname === '/auth/login' || pathname === '/auth/register')) {
+    if (!isAuth && !(pathname === '/auth/login' || pathname === '/auth/registration')) {
       router.push('/auth/login');
     }
   }, [isAuth, pathname, router])
