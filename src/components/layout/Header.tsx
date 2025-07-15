@@ -5,6 +5,7 @@ import Nav from "@/components/ui/Nav";
 import Auth from "@/components/ui/Auth";
 import {useStore} from "@/store";
 import User from "@/components/ui/User";
+import UserContextWrapper from "@/components/custom/UserContextWrapper";
 
 const Header = () => {
 
@@ -18,7 +19,13 @@ const Header = () => {
       </div>
 
       {/*В ідеалі винести в окремий компонент*/}
-      {user ? (<User user={user}/>) : (<Auth/>)}
+      {user ? (
+        <UserContextWrapper>
+          <User user={user}/>
+        </UserContextWrapper>
+      ) : (
+        <Auth/>
+        )}
 
     </header>
   );
