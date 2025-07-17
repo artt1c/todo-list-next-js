@@ -1,59 +1,37 @@
-'use client'
-
-import React, {useEffect} from 'react';
-import {useStore} from "@/store";
-import {getTodoListsByUserId} from "@/lib/firebase/firestore/getTodoListsByUserId";
+import React, {FC} from 'react';
 import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components/ui/resizable";
 import TodoLists from "@/components/features/TodoLists";
 import TaskList from "@/components/features/TaskList";
-import {getTasksByTodoId} from "@/lib/firebase/firestore/getTasksByTodoId";
+import {ITodo} from "@/models/ITodo";
+import {ITask} from "@/models/ITask";
 
-const ResizableLayout = () => {
+type Props = {
+  todoLists: ITodo[]
+  tasks: ITask[]
+  selectedTodoList: ITodo | null
 
-  const user = useStore(state => state.user);
-  const todoLists = useStore(state => state.todoLists);
-  const setTodoLists = useStore(state => state.setTodoLists);
-  const setSelectedTodoList = useStore(state => state.setSelectedTodoList);
-  const selectedTodoList = useStore(state => state.selectedTodoList);
-  const tasks = useStore(state => state.tasks);
-  const resetTasks = useStore(state => state.resetTasks);
-  const setTasks = useStore(state => state.setTasks);
+  addTodoList: (list: ITodo) => void;
+  setSelectedTodoList: (list: ITodo | null) => void
+  deleteTodoListZustand: (listId: string) => void;
+  updateTodoList: (listId: string, updatedFields: Partial<ITodo>) => void;
 
-  // Для todoList
-  useEffect(() => {
-    const fetchTodoLists = async () => {
-      if (user) {
-        const fetchedLists = await getTodoListsByUserId(user.uid);
-        if (fetchedLists) setTodoLists(fetchedLists);
-      } else {
-        setTodoLists([]);
-        setSelectedTodoList(null);
-        resetTasks();
-      }
-    };
+  addTask: (task: ITask) => void;
+  updateTaskZustand: (taskId: string, updatedFields: Partial<ITask>) => void;
+  deleteTaskZustand: (taskId: string) => void;
+}
 
-    fetchTodoLists();
-  }, [user, setTodoLists, setSelectedTodoList, resetTasks]);
-
-
-  // Для tasks
-  useEffect(() => {
-    const fetchTasksForSelectedList = async () => {
-      if (selectedTodoList) {
-        try {
-          const fetchedTasks = await getTasksByTodoId(selectedTodoList.id);
-          if (fetchedTasks) setTasks(fetchedTasks);
-        } catch (error) {
-          console.error("Помилка завантаження завдань:", error);
-          setTasks([]);
-        }
-      } else {
-        setTasks([]);
-      }
-    };
-
-    fetchTasksForSelectedList();
-  }, [selectedTodoList, setTasks]);
+const ResizableLayout:FC<Props> = ({
+                                     todoLists,
+                                     tasks,
+                                     selectedTodoList,
+                                     setSelectedTodoList,
+                                     updateTaskZustand,
+                                     deleteTaskZustand,
+                                     deleteTodoListZustand,
+                                     updateTodoList,
+                                     addTodoList,
+                                     addTask
+}) => {
 
   return (
     <div className='h-full'>
@@ -61,19 +39,32 @@ const ResizableLayout = () => {
         direction="horizontal"
         className=" rounded-lg border md:min-w-[450px]"
       >
-        <ResizablePanel defaultSize={50}>
+        <ResizablePanel>
           <h3 className='p-2 font-bold'>Списки</h3>
-          {todoLists && <TodoLists list={todoLists} setSelectedTodoList={setSelectedTodoList} selectedTodoList={selectedTodoList}/>}
+          {todoLists && <TodoLists
+            list={todoLists}
+            selectedTodoList={selectedTodoList}
+            setSelectedTodoList={setSelectedTodoList}
+            addTodoList={addTodoList}
+            updateTodoList={updateTodoList}
+            deleteTodoListZustand={deleteTodoListZustand}
+          />}
         </ResizablePanel>
         <ResizableHandle
           className='border-2'
         />
-        <ResizablePanel defaultSize={50}>
+        <ResizablePanel>
           <div className='flex gap-2 items-center'>
             <h3 className='p-2 font-bold'>Завдання</h3>
             {selectedTodoList && <p>{selectedTodoList.title}</p>}
           </div>
-          {tasks && <TaskList tasks={tasks} selectedTodoList={selectedTodoList}/>}
+          {tasks && <TaskList
+            tasks={tasks}
+            addTask={addTask}
+            selectedTodoList={selectedTodoList}
+            deleteTaskZustand={deleteTaskZustand}
+            updateTaskZustand={updateTaskZustand}
+          />}
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

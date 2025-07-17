@@ -1,4 +1,5 @@
 import {Timestamp} from "@firebase/firestore";
+import {ICollaborator} from "@/models/iCollaboartor";
 
 export interface ITodo {
   id: string;
@@ -6,5 +7,6 @@ export interface ITodo {
   updatedAt: Timestamp;
   createdAt: Timestamp;
   ownerId: string;
-  collaborators: [unknown];
+  collaborators: ICollaborator[];
+  collaboratorIds: string[];
 }

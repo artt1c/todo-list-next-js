@@ -4,7 +4,6 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {formattedTimeInMs} from "@/lib/formattedTimeInMs";
 import {Button} from "@/components/ui/button";
 import {CirclePlus, MinusCircle, PlusCircle, Trash} from "lucide-react";
-import {useStore} from "@/store";
 import {ITodo} from "@/models/ITodo";
 import {deleteTask} from "@/lib/firebase/firestore/deleteTask";
 import AddTask from "@/components/features/AddTask";
@@ -14,12 +13,18 @@ import UpdateTask from "@/components/features/UpdateTask";
 type Props = {
   tasks: ITask[];
   selectedTodoList: ITodo | null;
+  addTask: (task: ITask) => void;
+  deleteTaskZustand: (taskId: string) => void;
+  updateTaskZustand: (taskId: string, updatedFields: Partial<ITask>) => void;
 }
 
-const TaskList:FC<Props> = ({tasks, selectedTodoList}) => {
-
-  const deleteTaskZustand = useStore(state => state.deleteTask);
-  const updateTaskZustand = useStore(state => state.updateTask);
+const TaskList:FC<Props> = ({
+                              tasks,
+                              selectedTodoList,
+                              updateTaskZustand,
+                              deleteTaskZustand,
+                              addTask
+}) => {
 
   const handleDeleteTask = async (taskId: string) => {
     if (!selectedTodoList) {
@@ -73,7 +78,7 @@ const TaskList:FC<Props> = ({tasks, selectedTodoList}) => {
               Стан
             </TableHead>
             <TableHead className='flex justify-center items-center'>
-              <AddTask>
+              <AddTask addTask={addTask} selectedTodoList={selectedTodoList}>
                <span className='flex gap-2 items-center px-2 py-1'>
                   Створити!
                   <CirclePlus/>
@@ -107,7 +112,7 @@ const TaskList:FC<Props> = ({tasks, selectedTodoList}) => {
                 >
                   <Trash/>
                 </Button>
-                <UpdateTask task={task}/>
+                <UpdateTask task={task} updateTask={updateTaskZustand} selectedTodoList={selectedTodoList}/>
               </TableCell>
             </TableRow>
           ))}

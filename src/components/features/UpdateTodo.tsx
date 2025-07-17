@@ -8,12 +8,13 @@ import {ITodo} from "@/models/ITodo";
 
 type Props = {
   todo: ITodo
+  updateTodoList: (listId: string, updatedFields: Partial<ITodo>) => void;
 }
 
-const UpdateTodo:FC<Props> = ({todo}) => {
+const UpdateTodo:FC<Props> = ({todo, updateTodoList}) => {
 
   // Store
-  const {user, updateTodoList} = useStore();
+  const user = useStore(state => state.user);
 
   const handlerSubmit = async (data:IFormData) => {
     if (!user) return;

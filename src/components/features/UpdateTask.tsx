@@ -2,28 +2,27 @@ import React, {FC} from 'react';
 import {ITask} from "@/models/ITask";
 import {RefreshCcw} from "lucide-react";
 import GenericFormDialog from "@/components/features/GenericFormDialog";
-import {useStore} from "@/store";
 import {IFormData} from "@/models/IFormData";
 import {updateTaskFire} from "@/lib/firebase/firestore/updateTaskFire";
+import {ITodo} from "@/models/ITodo";
 
 
 type Props = {
   task: ITask;
+  selectedTodoList: ITodo | null;
+  updateTask: (taskId: string, updatedFields: Partial<ITask>) => void;
 };
 
-const UpdateTask:FC<Props> = ({task}) => {
-
-  const {user, selectedTodoList, updateTask: updateTask} = useStore();
+const UpdateTask:FC<Props> = ({task, updateTask, selectedTodoList}) => {
 
   const handlerSubmit = async (data:IFormData) => {
-    if (!user || !selectedTodoList || !data.description) return;
+    if ( !selectedTodoList || !data.description) return;
 
     task.title = data.title;
     task.description = data.description
     await updateTaskFire(selectedTodoList.id, task.id, task)
 
     updateTask(task.id, task)
-    console.log(task)
   }
 
   return (

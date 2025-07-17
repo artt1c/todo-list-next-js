@@ -2,17 +2,14 @@ import {addDoc, collection, doc, getDoc, serverTimestamp, updateDoc} from "@fire
 import {db} from "@/lib/firebase/clientApp";
 import {ITodo} from "@/models/ITodo";
 
-const role: 'admin' | 'viewer' = 'admin';
-
 export const createTodoList = async (title: string, uid:string) => {
 
   // Створення списку
   const docRef = await addDoc(collection(db, 'todoLists'), {
     title,
     ownerId: uid,
-    collaborators: {
-      [uid]: role
-    },
+    collaborators: [],
+    collaboratorIds: [],
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   })

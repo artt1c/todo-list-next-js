@@ -5,7 +5,6 @@ import {formattedTimeInMs} from "@/lib/formattedTimeInMs";
 import {Button} from "@/components/ui/button";
 import {CirclePlus, Trash} from "lucide-react";
 import {deleteTodoList} from "@/lib/firebase/firestore/deletTodoList";
-import {useStore} from "@/store";
 import AddTodo from "@/components/features/AddTodo";
 import UpdateTodo from "@/components/features/UpdateTodo";
 
@@ -13,10 +12,19 @@ type Props = {
   list:ITodo[];
   setSelectedTodoList: (id: ITodo) => void;
   selectedTodoList: ITodo | null
+  addTodoList: (list: ITodo) => void;
+  updateTodoList: (listId: string, updatedFields: Partial<ITodo>) => void;
+  deleteTodoListZustand: (listId: string) => void;
 }
 
-const TodoLists:FC<Props> = ({list, setSelectedTodoList, selectedTodoList}) => {
-  const deleteTodoListZustand = useStore(state => state.deleteTodoList);
+const TodoLists:FC<Props> = ({
+                               list,
+                               setSelectedTodoList,
+                               selectedTodoList,
+                               deleteTodoListZustand,
+                               updateTodoList,
+                               addTodoList
+}) => {
 
   const handleDelete = async (todoId: string) => {
     try {
@@ -42,7 +50,7 @@ const TodoLists:FC<Props> = ({list, setSelectedTodoList, selectedTodoList}) => {
               Створено
             </TableHead>
             <TableHead className='flex justify-center items-center'>
-              <AddTodo>
+              <AddTodo addTodoList={addTodoList}>
                 <span className='flex gap-2 items-center px-2 py-1'>
                   Створити
                   <CirclePlus/>
@@ -70,7 +78,7 @@ const TodoLists:FC<Props> = ({list, setSelectedTodoList, selectedTodoList}) => {
                   >
                     <Trash/>
                   </Button>
-                  <UpdateTodo todo={todo}/>
+                  <UpdateTodo todo={todo} updateTodoList={updateTodoList}/>
                 </TableCell>
             </TableRow>
           ))}
