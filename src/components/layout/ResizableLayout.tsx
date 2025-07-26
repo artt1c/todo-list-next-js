@@ -6,6 +6,8 @@ import {ITodo} from "@/models/ITodo";
 import {ITask} from "@/models/ITask";
 
 type Props = {
+  disableAddBtn?: boolean;
+
   todoLists: ITodo[]
   tasks: ITask[]
   selectedTodoList: ITodo | null
@@ -30,7 +32,8 @@ const ResizableLayout:FC<Props> = ({
                                      deleteTodoListZustand,
                                      updateTodoList,
                                      addTodoList,
-                                     addTask
+                                     addTask,
+                                     disableAddBtn
 }) => {
 
   return (
@@ -42,6 +45,7 @@ const ResizableLayout:FC<Props> = ({
         <ResizablePanel>
           <h3 className='p-2 font-bold'>Списки</h3>
           {todoLists && <TodoLists
+            disableOwnerBtn={disableAddBtn}
             list={todoLists}
             selectedTodoList={selectedTodoList}
             setSelectedTodoList={setSelectedTodoList}

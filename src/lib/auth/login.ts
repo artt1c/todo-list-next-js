@@ -22,9 +22,8 @@ export const loginUser = async (userData:ILogin) => {
     })
 
     toast.success('Вхід успішний')
-    console.log(user)
   } catch (error) {
-    if (error instanceof FirebaseError && error.code === 'auth/invalid-credential') {
+    if (error instanceof FirebaseError && error.code === 'getUidByEmail/invalid-credential') {
       toast.error('Неправильний логін або пароль');
     } else {
       toast.error('Щось пішло не так');

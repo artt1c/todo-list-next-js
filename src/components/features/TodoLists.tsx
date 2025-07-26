@@ -7,8 +7,10 @@ import {CirclePlus, Trash} from "lucide-react";
 import {deleteTodoList} from "@/lib/firebase/firestore/deletTodoList";
 import AddTodo from "@/components/features/AddTodo";
 import UpdateTodo from "@/components/features/UpdateTodo";
+import Collaborators from "@/components/features/Collaborators";
 
 type Props = {
+  disableOwnerBtn?: boolean
   list:ITodo[];
   setSelectedTodoList: (id: ITodo) => void;
   selectedTodoList: ITodo | null
@@ -23,7 +25,8 @@ const TodoLists:FC<Props> = ({
                                selectedTodoList,
                                deleteTodoListZustand,
                                updateTodoList,
-                               addTodoList
+                               addTodoList,
+                               disableOwnerBtn
 }) => {
 
   const handleDelete = async (todoId: string) => {
@@ -50,12 +53,15 @@ const TodoLists:FC<Props> = ({
               Створено
             </TableHead>
             <TableHead className='flex justify-center items-center'>
-              <AddTodo addTodoList={addTodoList}>
-                <span className='flex gap-2 items-center px-2 py-1'>
-                  Створити
-                  <CirclePlus/>
-                </span>
-              </AddTodo>
+              {
+                !disableOwnerBtn && <AddTodo addTodoList={addTodoList}>
+                  <span className='flex gap-2 items-center px-2 py-1'>
+                    Створити
+                    <CirclePlus/>
+                  </span>
+                </AddTodo>
+              }
+
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -78,7 +84,10 @@ const TodoLists:FC<Props> = ({
                   >
                     <Trash/>
                   </Button>
+
                   <UpdateTodo todo={todo} updateTodoList={updateTodoList}/>
+
+                  {!disableOwnerBtn && <Collaborators todoList={todo}/>}
                 </TableCell>
             </TableRow>
           ))}

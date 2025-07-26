@@ -6,8 +6,6 @@ export const getCollabTodoListByUid = async (uid: string) => {
   const todoListRef = collection(db, 'todoLists');
   const q = query(todoListRef, where('collaboratorIds', 'array-contains', uid))
 
-  console.log(q)
-
   try {
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs

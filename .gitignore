@@ -40,3 +40,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /.idea/
+/fir-todolist-14293-firebase-adminsdk-fbsvc-de5f7a77bf.json

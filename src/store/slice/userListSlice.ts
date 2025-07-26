@@ -1,6 +1,8 @@
 import {ITodo} from "@/models/ITodo";
 import {ITask} from "@/models/ITask";
 import {StateCreator} from "zustand/vanilla";
+import {ICollaborator} from "@/models/iCollaboartor";
+import {Timestamp} from "@firebase/firestore";
 
 export interface UserListSlice {
   userTodoLists: ITodo[];
@@ -11,8 +13,11 @@ export interface UserListSlice {
   addUserTodoList: (list: ITodo) => void;
   updateUserTodoList: (listId: string, updatedFields: Partial<ITodo>) => void;
   deleteUserTodoList: (listId: string) => void;
-
   setSelectedUserTodoList: (list: ITodo | null) => void;
+
+  addOrUpdateCollaborator: (todoId: string, collaborator: ICollaborator) => void;
+  removeCollaborator: (todoId: string, collaboratorId: string) => void;
+
   setUserTasks: (tasks: ITask[]) => void;
   addUserTask: (task: ITask) => void;
   updateUserTask: (taskId: string, updatedFields: Partial<ITask>) => void;
@@ -45,10 +50,78 @@ export const createUserListSlice: StateCreator<UserListSlice> = (set) => ({
     })),
   setSelectedUserTodoList: (list) => set({ selectedUserTodoList: list, userTasks: [] }),
 
+
+  addOrUpdateCollaborator: (todoId, collaborator) => {
+    set(state => ({
+      userTodoLists: state.userTodoLists.map(list => {
+        if (list.id === todoId) {
+
+          const filteredCollaborators = list.collaborators.filter(c => c.uid !== collaborator.uid);
+          const updatedCollaborators = [...filteredCollaborators, collaborator];
+
+          const updatedCollaboratorIds = [...list.collaboratorIds];
+          if (!list.collaboratorIds.includes(collaborator.uid)) updatedCollaboratorIds.push(collaborator.uid);
+
+          return {
+            ...list,
+            collaborators: updatedCollaborators,
+            collaboratorIds: updatedCollaboratorIds,
+            updatedAt: Timestamp.now(),
+          }
+        }
+        return list;
+      }),
+
+      selectedUserTodoList: state.selectedUserTodoList?.id === todoId
+        ? (() => {
+          const filteredCollaborators = state.selectedUserTodoList.collaborators.filter(c => c.uid !== collaborator.uid);
+          const updatedCollaborators = [...filteredCollaborators, collaborator];
+          const updatedCollaboratorIds = Array.from(new Set([...state.selectedUserTodoList.collaboratorIds, collaborator.uid]));
+          return {
+            ...state.selectedUserTodoList,
+            collaborators: updatedCollaborators,
+            collaboratorIds: updatedCollaboratorIds,
+            updatedAt: Timestamp.now(),
+          };
+        })()
+        : state.selectedUserTodoList,
+    }))
+  },
+  removeCollaborator: (todoId, collaboratorId) => {
+    set(state => ({
+      userTodoLists: state.userTodoLists.map(list => {
+        if (list.id === todoId) {
+          const updatedCollaborators = list.collaborators.filter(c => c.uid !== collaboratorId);
+          const updatedCollaboratorIds = list.collaboratorIds.filter(id => id !== collaboratorId);
+
+          return {
+            ...list,
+            collaborators: updatedCollaborators,
+            collaboratorIds: updatedCollaboratorIds,
+            updatedAt: Timestamp.now(),
+          }
+        }
+        return list
+      }),
+      //
+      selectedUserTodoList: state.selectedUserTodoList?.id === todoId
+        ? (() => {
+          const updatedCollaborators = state.selectedUserTodoList.collaborators.filter(c => c.uid !== collaboratorId);
+          const updatedCollaboratorIds = state.selectedUserTodoList.collaboratorIds.filter(id => id !== collaboratorId);
+          return {
+            ...state.selectedUserTodoList,
+            collaborators: updatedCollaborators,
+            collaboratorIds: updatedCollaboratorIds,
+            updatedAt: Timestamp.now(),
+          };
+        })()
+        : state.selectedUserTodoList,
+    }))
+  },
+
   setUserTasks: (tasks) => set({ userTasks: tasks }),
   addUserTask: (task) => set(state => ({ userTasks: [...state.userTasks, task] })),
 
-  // refactor not update title
   updateUserTask: (taskId, updatedFields) =>
     set(state => ({
       userTasks: state.userTasks.map(task =>
